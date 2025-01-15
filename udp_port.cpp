@@ -205,7 +205,7 @@ write_message(const mavlink_message_t &message)
 	if(bytesWritten < 0){
 		fprintf(stderr, "ERROR: Could not write, res = %d, errno = %d : %m\n", bytesWritten, errno);
 	}
-
+    printf("UDP_Port::write_message Sent %d bytes\n", bytesWritten);
 	return bytesWritten;
 }
 
@@ -315,7 +315,8 @@ _read_port(uint8_t &cp)
 		len = sizeof(struct sockaddr_in);
 		result = recvfrom(sock, &buff, BUFF_LEN, 0, (struct sockaddr *)&addr, &len);
 		if(tx_port < 0){
-			if(strcmp(inet_ntoa(addr.sin_addr), target_ip) == 0){
+			if(true){
+			// if(strcmp(inet_ntoa(addr.sin_addr), target_ip) == 0){
 				tx_port = ntohs(addr.sin_port);
 				printf("Got first packet, sending to %s:%i\n", target_ip, rx_port);
 			}else{

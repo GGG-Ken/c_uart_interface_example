@@ -676,9 +676,11 @@ start()
 		if ( time_to_exit )
 			return;
 		usleep(500000);
-	}
+        printf("cant Wait for initial position ned break");
+        break;
+    }
 
-	// copy initial position ned
+    // copy initial position ned
 	Mavlink_Messages local_data = current_messages;
 	initial_position.x        = local_data.local_position_ned.x;
 	initial_position.y        = local_data.local_position_ned.y;
@@ -710,7 +712,6 @@ start()
 
 	// now we're streaming setpoint commands
 	printf("\n");
-
 
 	// Done!
 	return;
@@ -857,8 +858,9 @@ write_thread(void)
 	}
 
 	// write a message and signal writing
-	write_setpoint();
-	writing_status = true;
+    printf("write_setpoint");
+    write_setpoint();
+    writing_status = true;
 
 	// Pixhawk needs to see off-board commands at minimum 2Hz,
 	// otherwise it will go into fail safe

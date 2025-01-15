@@ -71,12 +71,14 @@ top (int argc, char **argv)
 #ifdef __APPLE__
 	char *uart_name = (char*)"/dev/tty.usbmodem1";
 #else
-	char *uart_name = (char*)"/dev/ttyUSB0";
+	// char *uart_name = (char*)"/dev/ttyUSB0";
+	char *uart_name = (char*)"/dev/tty20";
 #endif
 	int baudrate = 57600;
 
-	bool use_udp = false;
-	char *udp_ip = (char*)"127.0.0.1";
+	bool use_udp = true;
+	char *udp_ip = (char*)"10.66.30.49";
+	// char *udp_ip = (char*)"127.0.0.1";
 	int udp_port = 14540;
 	bool autotakeoff = false;
 
@@ -153,7 +155,7 @@ top (int argc, char **argv)
 	/*
 	 * Now we can implement the algorithm we want on top of the autopilot interface
 	 */
-	commands(autopilot_interface, autotakeoff);
+	// commands(autopilot_interface, autotakeoff);
 
 
 	// --------------------------------------------------------------------------
@@ -163,10 +165,11 @@ top (int argc, char **argv)
 	/*
 	 * Now that we are done we can stop the threads and close the port
 	 */
-	autopilot_interface.stop();
-	port->stop();
+    
+	// autopilot_interface.stop();
+	// port->stop();
 
-	delete port;
+	// delete port;
 
 	// --------------------------------------------------------------------------
 	//   DONE
@@ -419,10 +422,11 @@ parse_commandline(int argc, char **argv, char *&uart_name, int &baudrate,
 //   Quit Signal Handler
 // ------------------------------------------------------------------------------
 // this function is called when you press Ctrl-C
-void
-quit_handler( int sig )
+static bool is_exit = false;
+void quit_handler(int sig)
 {
-	printf("\n");
+    is_exit = true;
+    printf("\n");
 	printf("TERMINATING AT USER REQUEST\n");
 	printf("\n");
 
@@ -451,18 +455,20 @@ int
 main(int argc, char **argv)
 {
 	// This program uses throw, wrap one big try/catch here
-	try
-	{
-		int result = top(argc,argv);
-		return result;
-	}
-
-	catch ( int error )
-	{
-		fprintf(stderr,"mavlink_control threw exception %i \n" , error);
-		return error;
-	}
-
+	// try
+	// {
+	// 	int result = top(argc,argv);
+	// 	return result;
+	// }
+    // catch ( int error )
+	// {
+	// 	fprintf(stderr,"mavlink_control threw exception %i \n" , error);
+	// 	return error;
+	// }
+    int result = top(argc, argv);
+    while (!is_exit)
+    {
+        sleep(1);
+    }
+    return 0;
 }
-
-
